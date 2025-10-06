@@ -1,0 +1,76 @@
+
+/* style.css - final with dark pastel mode */
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter, "Helvetica Neue", Arial, sans-serif}
+html,body,#app{height:100%}
+:root{
+  --bg1:#fffaf6; --bg2:#fff8fb; --text:#1f1f1f;
+  --accent1:#FF9AA2; --accent2:#FFB7B2; --accent3:#FFDAC1; --accent4:#E2F0CB; --accent5:#B5EAD7; --accent6:#C7CEEA;
+  --panel-bg: linear-gradient(180deg,rgba(255,255,255,0.8),#ffffff);
+}
+body{background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--text);-webkit-font-smoothing:antialiased;padding-bottom:100px;transition:background 0.5s,color 0.5s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;background-image:radial-gradient(rgba(0,0,0,0.01) 1px, transparent 1px);background-size:6px 6px;opacity:0.6}
+
+/* dark pastel theme */
+body.dark{
+  --bg1:#161428; --bg2:#181528; --text:#e8e8f0;
+  --accent1:#b76b80; --accent2:#9d7aa8; --accent3:#7fb6a4; --accent4:#6f9fb8; --accent5:#c89fb9; --accent6:#9fb6c8;
+}
+
+/* topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,0.06);position:sticky;top:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);z-index:20}
+.topbar h1{font-size:1.1rem;color:var(--text)}
+
+/* buttons */
+.btn{background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.06);padding:8px 10px;border-radius:12px;font-size:0.95rem;cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+.btn.big{padding:12px 14px;font-size:1rem;border-radius:14px}
+.btn.special{background:linear-gradient(90deg,#fff7ef,#fff1f8)}
+
+/* container */
+.container{padding:12px;display:flex;flex-direction:column;gap:12px}
+
+/* bottom nav */
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:12px;display:flex;gap:8px;background:rgba(255,255,255,0.95);padding:6px;border-radius:999px;box-shadow:0 8px 20px rgba(0,0,0,0.08);z-index:30}
+.nav-btn{background:transparent;border:0;padding:8px 10px;border-radius:10px;display:flex;flex-direction:column;align-items:center;font-size:0.9rem;cursor:pointer;color:var(--text)}
+.nav-btn span{font-size:0.7rem;margin-top:4px}
+.nav-btn.active{background:linear-gradient(90deg,#fff,#fff);box-shadow:0 6px 14px rgba(0,0,0,0.06)}
+
+/* panel */
+.panel{background:var(--panel-bg);border-radius:14px;padding:14px;box-shadow:0 12px 30px rgba(0,0,0,0.06);max-width:980px;margin:0 auto}
+.page{display:none}
+.page.active{display:block}
+
+/* matrix */
+.matrix{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.quadrant{background:rgba(255,255,255,0.6);border-radius:10px;padding:8px;min-height:120px}
+.quadrant h4{font-size:0.9rem;margin-bottom:8px}
+
+/* lists */
+.list, .list-vertical, .compact-list, .start-list{display:flex;flex-direction:column;gap:8px}
+.task, .payment, .idea, .health-item, .growth-item{background:var(--panel-bg);padding:10px;border-radius:10px;border:1px solid rgba(0,0,0,0.05);display:flex;justify-content:space-between;align-items:center;cursor:grab}
+.task.dragging, .idea.dragging{opacity:0.6;transform:scale(0.98)}
+.dropzone.dragover{outline:3px dashed rgba(0,0,0,0.09)}
+
+/* badges */
+.badge{padding:6px 10px;border-radius:999px;font-size:0.8rem}
+.p-urgent{background:#ff7b7b;color:#fff}
+.p-important{background:#ff9f6b;color:#fff}
+.p-medium{background:#ffd76b;color:#333}
+.p-low{background:#e9ecef;color:#333}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;padding:16px}
+.modal.hidden{display:none}
+.modal-inner{background:linear-gradient(180deg,#ffffff,#fffaf8);border-radius:16px;width:100%;max-width:720px;padding:18px;box-shadow:0 20px 50px rgba(0,0,0,0.12);animation:pop .18s ease}
+@keyframes pop{from{transform:translateY(8px) scale(.98);opacity:0}to{transform:none;opacity:1}}
+.modal-close{position:absolute;right:18px;top:12px;background:transparent;border:0;font-size:1.1rem;cursor:pointer}
+
+/* footer */
+.foot{padding:12px;text-align:center;font-size:0.82rem;color:var(--text)}
+.qr-wrap{margin-top:8px}
+
+/* responsive */
+@media(max-width:900px){
+  .matrix{grid-template-columns:1fr}
+  .panel{margin:0 12px}
+  .bottom-nav{left:50%;transform:translateX(-50%);width:calc(100% - 24px)}
+}
