@@ -73,7 +73,39 @@ function setupDragDrop(){
   document.querySelectorAll('.quadrant').forEach(q=>{
     q.addEventListener('dragover',(e)=>{ e.preventDefault(); q.classList.add('dragover'); });
     q.addEventListener('dragleave',()=> q.classList.remove('dragover'));
-    q.addEventListener('drop',(e)=>{ e.preventDefault(); q.classList.remove('dragover'); const raw = e.dataTransfer.getData('text/wiz-task') || e.dataTransfer.getData('text/wiz-idea') || e.dataTransfer.getData('text/wiz-payment'); if(!raw) return; try{ const obj=JSON.parse(raw); if(obj && obj.id && obj.title){ const qnum=parseInt(q.dataset.q,10)||4; const task = stateRef.tasks.find(t=>t.id===obj.id); if(task){ task.q=qnum; task.priority = qnum===1?1:qnum===2?2:3; } else { const newTask = { id: Date.now().toString(), title: obj.title, due: obj.due||null, q:qnum, priority:qnum===1?1:2, note: obj.note||'' }; stateRef.tasks.push(newTask); if (e.dataTransfer.getData('text/wiz-idea')) stateRef.ideas = stateRef.ideas.filter(i=>i.id!==obj.id); if (e.dataTransfer.getData('text/wiz-payment')) stateRef.payments = stateRef.payments.filter(p=>p.id!==obj.id); } wiz.registerChange(); renderAll(); }catch(e){console.warn(e);} });
+    q.addEventListener('drop',(e)=>{ 
+      e.preventDefault(); 
+      q.classList.remove('dragover'); 
+      const raw = e.dataTransfer.getData('text/wiz-task') || e.dataTransfer.getData('text/wiz-idea') || e.dataTransfer.getData('text/wiz-payment'); 
+      if(!raw) return; 
+      try { 
+        const obj = JSON.parse(raw); 
+        if(obj && obj.id && obj.title){ 
+          const qnum = parseInt(q.dataset.q,10)||4; 
+          const task = stateRef.tasks.find(t=>t.id===obj.id); 
+          if(task){ 
+            task.q = qnum; 
+            task.priority = qnum===1?1:qnum===2?2:3; 
+          } else { 
+            const newTask = { 
+              id: Date.now().toString(), 
+              title: obj.title, 
+              due: obj.due||null, 
+              q: qnum, 
+              priority: qnum===1?1:2, 
+              note: obj.note||'' 
+            }; 
+            stateRef.tasks.push(newTask); 
+            if (e.dataTransfer.getData('text/wiz-idea')) stateRef.ideas = stateRef.ideas.filter(i=>i.id!==obj.id); 
+            if (e.dataTransfer.getData('text/wiz-payment')) stateRef.payments = stateRef.payments.filter(p=>p.id!==obj.id); 
+          } 
+          wiz.registerChange(); 
+          renderAll(); 
+        }
+      } catch(e) {
+        console.warn(e);
+      }
+    });
   });
 }
 function badgeClass(p){ return p===1?'p-urgent':p===2?'p-important':p===3?'p-medium':'p-low'; }
