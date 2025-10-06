@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wizjonerka — asystent ADHD</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <h1 class="logo">Wizjonerka</h1>
+      <div class="top-actions">
+        <button id="theme-toggle" class="icon-btn" aria-label="Przełącz motyw">🌙</button>
+        <button id="btnNotifyToggle" class="icon-btn" title="Powiadomienia">🔔</button>
+        <button id="btnSync" class="icon-btn" title="Synchronizuj">🔗</button>
+        <button id="btnExport" class="icon-btn" title="Eksport">⬇️</button>
+        <button id="btnImport" class="icon-btn" title="Import">⬆️</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <nav class="bottom-nav" aria-label="Nawigacja">
+        <button class="nav-btn active" data-target="overview">🏠<span>Pulpit</span></button>
+        <button class="nav-btn" data-target="tasks">✅<span>Zadania</span></button>
+        <button class="nav-btn" data-target="health">❤️<span>Zdrowie</span></button>
+        <button class="nav-btn" data-target="ideas">💡<span>Pomysły</span></button>
+        <button class="nav-btn" data-target="growth">🌱<span>Rozwój</span></button>
+        <button class="nav-btn" data-target="payments">💳<span>Płatności</span></button>
+      </nav>
+
+      <section id="overview" class="panel page active rainbow-1">
+        <h2>Pulpit</h2>
+        <div class="overview-grid">
+          <div class="card">
+            <h3>Dzisiaj — Zacznij od</h3>
+            <ul id="startList" class="start-list"></ul>
+          </div>
+          <div class="card">
+            <h3>Nadchodzące płatności</h3>
+            <ul id="upcomingPayments" class="compact-list"></ul>
+          </div>
+          <div class="card">
+            <h3>Zadania na dziś</h3>
+            <ul id="todayTasks" class="compact-list"></ul>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button id="btnQuickIdea" class="btn special">💡 Szybki pomysł</button>
+          <button id="btnGenerateDay" class="btn">✨ Generuj pomysły dnia</button>
+          <button id="btnGenerateGoal" class="btn">🎯 Zamień cel w kroki</button>
+        </div>
+      </section>
+
+      <section id="tasks" class="panel page rainbow-2">
+        <h2>Zadania</h2>
+        <div class="controls">
+          <button id="addTask" class="btn big">+ Dodaj zadanie</button>
+          <select id="filterTasks" class="small">
+            <option value="all">Wszystkie</option>
+            <option value="urgent">Pilne i ważne</option>
+            <option value="important">Ważne</option>
+            <option value="today">Dziś</option>
+          </select>
+        </div>
+        <div id="eisenhower" class="matrix">
+          <div class="quadrant" data-q="1"><h4>🔴 Pilne i ważne</h4><div class="list" id="q1"></div></div>
+          <div class="quadrant" data-q="2"><h4>🟠 Ważne, nie pilne</h4><div class="list" id="q2"></div></div>
+          <div class="quadrant" data-q="3"><h4>🟡 Pilne, nie ważne</h4><div class="list" id="q3"></div></div>
+          <div class="quadrant" data-q="4"><h4>⚪ Niepilne, nieważne</h4><div class="list" id="q4"></div></div>
+        </div>
+      </section>
+
+      <section id="health" class="panel page rainbow-4">
+        <h2>Zdrowie</h2>
+        <div class="controls">
+          <button id="addHealth" class="btn big">+ Dodaj wpis</button>
+        </div>
+        <div id="healthList" class="list-vertical"></div>
+      </section>
+
+      <section id="ideas" class="panel page rainbow-6">
+        <h2>Pomysły</h2>
+        <div class="controls">
+          <button id="btnAddIdea" class="btn big">+ Dodaj pomysł</button>
+          <button id="btnManageIdeas" class="btn">Edytuj bazę pomysłów</button>
+        </div>
+        <div id="ideasList" class="list-vertical"></div>
+      </section>
+
+      <section id="growth" class="panel page rainbow-5">
+        <h2>Rozwój</h2>
+        <div class="controls">
+          <button id="addGrowth" class="btn big">+ Dodaj</button>
+          <button id="btnGenerateGoalModal" class="btn">🎯 Generuj plan z celu</button>
+        </div>
+        <div id="growthList" class="list-vertical"></div>
+      </section>
+
+      <section id="payments" class="panel page rainbow-3">
+        <h2>Płatności</h2>
+        <div class="controls">
+          <button id="addPayment" class="btn big">+ Dodaj płatność</button>
+        </div>
+        <div id="paymentsList" class="list-vertical"></div>
+      </section>
+    </main>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+      <div class="modal-inner">
+        <button id="closeModal" class="modal-close">✕</button>
+        <h3 id="modalTitle">Tytuł</h3>
+        <div id="modalBody"></div>
+      </div>
+    </div>
+
+    <footer class="foot">
+      <small>Wizjonerka • Dane lokalnie (localStorage) • QR / Eksport dla synchronizacji</small>
+      <div id="qrWrap" class="qr-wrap"></div>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs2@0.0.2/qrcode.min.js"></script>
+  <script type="module" src="./components/tasks.js"></script>
+  <script type="module" src="./components/payments.js"></script>
+  <script type="module" src="./components/health.js"></script>
+  <script type="module" src="./components/ideas.js"></script>
+  <script type="module" src="./components/growth.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
