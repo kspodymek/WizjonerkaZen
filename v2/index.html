@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Wizjonerka — asystent ADHD</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -22,19 +23,27 @@
     <main class="container">
       <nav class="bottom-nav" aria-label="Nawigacja">
         <button class="nav-btn active" data-target="overview">🏠<span>Pulpit</span></button>
-        <button class="nav-btn" data-target="tasks">✅<span>Zadania</span></button>
-        <button class="nav-btn" data-target="health">❤️<span>Zdrowie</span></button>
+        <button class="nav-btn" data-target="tasks">✓<span>Zadania</span></button>
+        <button class="nav-btn" data-target="health">♥<span>Zdrowie</span></button>
         <button class="nav-btn" data-target="ideas">💡<span>Pomysły</span></button>
         <button class="nav-btn" data-target="growth">🌱<span>Rozwój</span></button>
-        <button class="nav-btn" data-target="payments">💳<span>Płatności</span></button>
+        <button class="nav-btn" data-target="payments">�<span>Płatności</span></button>
       </nav>
 
       <section id="overview" class="panel page active rainbow-1">
         <h2>Pulpit</h2>
         <div class="overview-grid">
-          <div class="card">
-            <h3>Dzisiaj — Zacznij od</h3>
-            <ul id="startList" class="start-list"></ul>
+          <div class="card start-card">
+            <h3>Zacznij od</h3>
+            <ul id="startList" class="start-list">
+              <li>🎯 Zaplanowanie dnia</li>
+              <li>🍳 Zjedzenie śniadania</li>
+              <li>3.0</li>
+            </ul>
+            <div class="daily-message">
+              <h4>Powiadomienie dnia</h4>
+              <p>Oddychaj. Dziś zrób tylko to, co konieczne.</p>
+            </div>
           </div>
           <div class="card">
             <h3>Nadchodzące płatności</h3>
