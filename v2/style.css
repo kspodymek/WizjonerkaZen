@@ -45,6 +45,7 @@ html,body,#app{height:100%}
   --text:#1f1f1f;
   --muted:rgba(0,0,0,0.06);
   --card:#ffffff;
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   
   /* Accent colors */
   --accent1:#ffd1dc;
@@ -252,10 +253,84 @@ body.dark .panel{background:linear-gradient(180deg,rgba(24,20,32,0.7),rgba(14,12
 body.dark .btn{background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);color:#e9e9f2}
 body.dark .task, body.dark .payment{background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03)}
 
+/* Fix for buttons and controls */
+.controls {
+  display: flex;
+  gap: 12px;
+  margin: 16px 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+select.small {
+  padding: 8px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--muted);
+  background: var(--card);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* Improvements for forms */
+input, textarea, select {
+  font-family: var(--font-main);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 1px solid var(--muted);
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn.special {
+  background: var(--primary-gradient);
+  border: none;
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Fixes for drag and drop */
+.task, .payment, .idea, .health-item, .growth-item {
+  margin: 8px 0;
+  background: var(--card);
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+}
+
+.dragging {
+  opacity: 0.6;
+  box-shadow: var(--shadow-md);
+}
+
 /* responsive */
 @media(max-width:900px){
   .overview-grid{grid-template-columns:1fr}
   .matrix{grid-template-columns:1fr}
   .panel{margin:0 12px}
   .bottom-nav{left:50%;transform:translateX(-50%);width:calc(100% - 24px)}
+  
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
