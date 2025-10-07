@@ -117,14 +117,23 @@ function quickIdea(){
   }
 }
 function openAddIdeaModal(){ const form = document.createElement('form'); form.innerHTML = `<label>Pomysł<br><input name="title" required></label><br><label>Notatka<br><input name="note"></label><br><div style="display:flex;gap:8px;margin-top:8px"><button class="btn" type="submit">Zapisz 💾</button><button type="button" id="cancel" class="btn">Anuluj</button></div>`; form.addEventListener('submit',(e)=>{ e.preventDefault(); const fd=new FormData(form); stateRef.ideas.push({ id: Date.now().toString(), title: fd.get('title'), note: fd.get('note') }); wiz.registerChange(); renderAll(); document.getElementById('modal').classList.add('hidden'); }); form.querySelector('#cancel').addEventListener('click', ()=> document.getElementById('modal').classList.add('hidden')); const openModal = document.querySelector('body').__openModal || window.openModal; if (openModal) openModal('Dodaj pomysł', form); }
-function openManageIdeasModal(){ const div=document.createElement('div'); const list=document.createElement('div'); list.style.display='flex'; list.style.flexDirection='column'; list.style.gap='8px'; const combined = Array.from(new Set([...(stateRef.ideas||[]).map(i=>i.title), ...defaultIdeas])); combined.forEach((t,idx)=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.gap='8px'; row.style.alignItems='center'; const input=document.createElement('input'); input.value=t; input.style.flex='1'; const del=document.createElement('button'); del.className='btn'; del.textContent='Usuń'; del.addEventListener('click', ()=> { if(confirm('Usuń ten pomysł?')){ row.remove(); } }); row.appendChild(input); row.appendChild(del); list.appendChild(row); }); const saveBtn=document.createElement('button'); saveBtn.className='btn'; saveBtn.textContent='Zapisz bazę'; saveBtn.addEventListener('click', ()=>{ const values = Array.from(list.querySelectorAll('input')).map(i=>i.value).filter(Boolean); stateRef.ideas = values.map(v=>({ id: Date.now().toString() + Math.random().toString(36).slice(2,6), title: v, note:'' })); wiz.registerChange(); document.getElementById('modal').classList.add('hidden'); }); div.appendChild(list); div.appendChild(saveBtn); const openModal = document.querySelector('body').__openModal || window.openModal; if (openModal) openModal('Edytuj bazę pomysłów', div); }
-export function renderAll(){ 
-  const container=document.getElementById('ideasList'); 
-  container.innerHTML=''; 
+function openManageIdeasModal(){ 
+  const div=document.createElement('div'); 
+  const list=document.createElement('div'); 
+  list.style.display='flex'; 
+  list.style.flexDirection='column'; 
+  list.style.gap='8px'; 
+  
+  // Zbierz wszystkie pomysły ze wszystkich kategorii
+  const allIdeas = Object.values(defaultIdeas).flat();
+  const combined = Array.from(new Set([...(stateRef.ideas||[]).map(i=>i.title), ...allIdeas])); combined.forEach((t,idx)=>{ const row=document.createElement('div'); row.style.display='flex'; row.style.gap='8px'; row.style.alignItems='center'; const input=document.createElement('input'); input.value=t; input.style.flex='1'; const del=document.createElement('button'); del.className='btn'; del.textContent='Usuń'; del.addEventListener('click', ()=> { if(confirm('Usuń ten pomysł?')){ row.remove(); } }); row.appendChild(input); row.appendChild(del); list.appendChild(row); }); const saveBtn=document.createElement('button'); saveBtn.className='btn'; saveBtn.textContent='Zapisz bazę'; saveBtn.addEventListener('click', ()=>{ const values = Array.from(list.querySelectorAll('input')).map(i=>i.value).filter(Boolean); stateRef.ideas = values.map(v=>({ id: Date.now().toString() + Math.random().toString(36).slice(2,6), title: v, note:'' })); wiz.registerChange(); document.getElementById('modal').classList.add('hidden'); }); div.appendChild(list); div.appendChild(saveBtn); const openModal = document.querySelector('body').__openModal || window.openModal; if (openModal) openModal('Edytuj bazę pomysłów', div); }
+export function renderAll() {
+  const container = document.getElementById('ideasList');
+  container.innerHTML = '';
   
   // Grupuj pomysły po dacie
   const groupedIdeas = {};
-  (stateRef.ideas||[]).forEach(i => {
+  (stateRef.ideas || []).forEach(i => {
     const date = i.date ? new Date(i.date).toLocaleDateString() : 'Bez daty';
     if (!groupedIdeas[date]) {
       groupedIdeas[date] = [];
@@ -164,5 +173,42 @@ export function renderAll(){
         <div>
           <button class="btn small">⋯</button>
         </div>
-      `; el.addEventListener('click', ()=>{ const newT = prompt('Edytuj pomysł:', i.title); if(newT===null) return; i.title=newT; if(confirm('Usuń pomysł?')) stateRef.ideas = stateRef.ideas.filter(x=>x.id!==i.id); wiz.registerChange(); renderAll(); }); el.addEventListener('dragstart',(ev)=>{ ev.dataTransfer.setData('text/wiz-idea', JSON.stringify(i)); el.classList.add('dragging'); }); el.addEventListener('dragend', ()=> el.classList.remove('dragging')); container.appendChild(el); }); }
-function escapeHtml(s){ return String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+      `;
+
+      // Event listeners
+      el.querySelector('.btn').addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent triggering parent's click event
+        const newT = prompt('Edytuj pomysł:', i.title);
+        if (newT === null) return;
+        i.title = newT;
+        
+        if (confirm('Usunąć pomysł?')) {
+          stateRef.ideas = stateRef.ideas.filter(x => x.id !== i.id);
+        }
+        
+        wiz.registerChange();
+        renderAll();
+      });
+
+      el.addEventListener('dragstart', (ev) => {
+        ev.dataTransfer.setData('text/wiz-idea', JSON.stringify(i));
+        el.classList.add('dragging');
+      });
+
+      el.addEventListener('dragend', () => {
+        el.classList.remove('dragging');
+      });
+
+      container.appendChild(el);
+    });
+  });
+}
+function escapeHtml(s) {
+  const htmlEscapes = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;'
+  };
+  return String(s).replace(/[&<>"]/g, char => htmlEscapes[char]);
+}
