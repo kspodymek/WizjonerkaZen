@@ -46,6 +46,80 @@ document.getElementById('btnImport').addEventListener('click', ()=>{ const ta=do
 function generateQR(){ const wrap = document.getElementById('qrWrap'); wrap.innerHTML=''; try{ new QRCode(wrap, { text: JSON.stringify(state), width: 140, height:140 }); }catch(e){ wrap.textContent='QR unavailable'; } }
 document.getElementById('btnSync').addEventListener('click', ()=>{ if(navigator.share){ try{ navigator.share({ title:'Wizjonerka backup', text: JSON.stringify(state) }); alert('Udostępniono'); }catch(e){} } else { generateQR(); alert('QR z danymi wygenerowany w stopce'); } });
 
+// quick actions
+document.getElementById('btnQuickIdea').addEventListener('click', () => {
+  const form = document.createElement('form');
+  form.innerHTML = `
+    <label>Szybki pomysł<br><input name="title" required autofocus></label><br>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button type="submit" class="btn">Zapisz 💾</button>
+      <button type="button" id="cancel" class="btn">Anuluj</button>
+    </div>
+  `;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = form.querySelector('input').value;
+    const idea = { id: Date.now().toString(), title, created: new Date().toISOString() };
+    state.ideas.push(idea);
+    registerChange();
+    Ideas.renderAll();
+    modal.classList.add('hidden');
+  });
+  form.querySelector('#cancel').addEventListener('click', () => modal.classList.add('hidden'));
+  openModal('Szybki pomysł', form);
+});
+
+document.getElementById('btnGenerateIdeas').addEventListener('click', () => {
+  const suggestions = [
+    'Medytacja poranna',
+    'Spacer na świeżym powietrzu',
+    'Napisanie dziennika',
+    'Stretching',
+    'Planowanie tygodnia',
+    'Czytanie książki'
+  ];
+  const list = document.createElement('div');
+  list.innerHTML = `
+    <p>Wybierz z sugerowanych działań:</p>
+    <ul style="list-style:none;padding:0;margin:16px 0">
+      ${suggestions.map(s => `<li style="margin:8px 0"><button class="btn" onclick="this.closest('.modal').classList.add('hidden')">${s}</button></li>`).join('')}
+    </ul>
+  `;
+  openModal('Pomysły na dzień', list);
+});
+
+document.getElementById('btnGoalSteps').addEventListener('click', () => {
+  const form = document.createElement('form');
+  form.innerHTML = `
+    <label>Cel<br><input name="goal" required autofocus></label><br>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button type="submit" class="btn">Generuj kroki 🎯</button>
+      <button type="button" id="cancel" class="btn">Anuluj</button>
+    </div>
+  `;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const goal = form.querySelector('input').value;
+    const steps = [
+      'Zbadaj obecną sytuację',
+      'Określ konkretny cel',
+      'Zaplanuj pierwsze kroki',
+      'Ustal harmonogram',
+      'Rozpocznij działanie'
+    ];
+    const list = document.createElement('div');
+    list.innerHTML = `
+      <p>Kroki do celu: ${goal}</p>
+      <ul style="list-style:none;padding:0;margin:16px 0">
+        ${steps.map((step, i) => `<li style="margin:8px 0"><button class="btn" onclick="this.closest('.modal').classList.add('hidden')">${i+1}. ${step}</button></li>`).join('')}
+      </ul>
+    `;
+    openModal('Plan działania', list);
+  });
+  form.querySelector('#cancel').addEventListener('click', () => modal.classList.add('hidden'));
+  openModal('Zamień cel w kroki', form);
+});
+
 // notifications
 document.getElementById('btnNotifyToggle').addEventListener('click', ()=>{
   if(Notification && Notification.permission === 'granted'){ state.meta.notifications = false; save(); alert('Powiadomienia wyłączone'); }
